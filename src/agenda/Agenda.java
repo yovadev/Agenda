@@ -14,7 +14,7 @@ public class Agenda extends JFrame implements ActionListener{
     private JTextField camponuevonombre, camponuevotelefono, campocrearnombre;
     private JLabel etiquetanuevonombre, etiquetanuevotelefono, imprimenombre, imprimetelefono,
             nombreprograma, nombreautor, numeroversion, dibusca;
-    private JButton boton, botonnuevo, botonbusca;
+    private JButton boton, botonnuevo, botonbuscar;
     
     //otras variables
     
@@ -63,23 +63,83 @@ public class Agenda extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e){
     Container f = this.getContentPane();
         if (e.getSource() == mi1) {
+            /** ocultar elementos previos **/
+            nombreprograma.setVisible(false);
+            nombreautor.setVisible(false);
+            numeroversion.setVisible(false);
+            
+            /*formulario */
+            etiquetanuevonombre = new JLabel("Nuevo nombre");
+            etiquetanuevonombre.setBounds(0,0,180,30);
+            add(etiquetanuevonombre);
+            etiquetanuevonombre.setVisible(true);
+            
+                        camponuevonombre = new JTextField();
+            camponuevonombre.setBounds(100,0,180,30);
+            add(camponuevonombre);
+            camponuevonombre.setVisible(true);
+            
+                        etiquetanuevotelefono = new JLabel("Nuevo telefono");
+            etiquetanuevotelefono.setBounds(0,50,180,30);
+            add(etiquetanuevotelefono);
+            etiquetanuevotelefono.setVisible(true);
+            
+                        camponuevotelefono = new JTextField();
+            camponuevotelefono.setBounds(100,50,180,30);
+            add(camponuevotelefono);
+            camponuevotelefono.setVisible(true);
+            
+            botonnuevo = new JButton("Crear");
+            botonnuevo.setBounds(100,100, 180, 30);
+            add(botonnuevo);
+            botonnuevo.addActionListener(this);
+            botonnuevo.setVisible(true);
             
         }
         
          if (e.getSource() == mi2) {
+                      /** ocultar elementos previos **/
+            nombreprograma.setVisible(false);
+            nombreautor.setVisible(false);
+            numeroversion.setVisible(false);
+            etiquetanuevonombre.setVisible(false);
+            camponuevonombre.setVisible(false);
+            etiquetanuevotelefono.setVisible(false);
+            camponuevotelefono.setVisible(false);
+            botonnuevo.setVisible(false);
             
         }
          
           if (e.getSource() == mi3) {
-              System.exit(0);
-            
+              System.exit(0); 
         }
-    
+          
+         if (e.getSource()==botonnuevo) {
+             try {
+                System.out.println("Conectando a la Base de Datos");
+                 Class.forName("com.mysql.cj.jdbc.Driver");
+                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/agendatelefonica?useTimezone=true&serverTimezone=UTC", "root", "");
+                       System.out.println("Conexion realiza con exito!");
+                    Statement estado = con.createStatement();
+                    estado.executeUpdate("INSERT INTO agenda VALUES ('5', '"+camponuevonombre.getText()+"', '"+camponuevotelefono.getText()+"')");
+                      System.out.println("Datos insertados");
+             } catch (SQLException ex) {
+            System.out.println("error mysql");
+        }
+        catch(ClassNotFoundException err){
+            err.printStackTrace();
+        }
+        catch(Exception ex){
+            System.out.println("Se ha encontrado un error es: "+ex.getMessage());
+        }
+
+            }
     }
+    
     
     public static void main(String[] args) {
         Agenda ventana = new Agenda();
-        ventana.setBounds(10, 20, 640, 250);
+        ventana.setBounds(10, 20, 440, 250);
         ventana.setVisible(true);
         ventana.setResizable(false);
     }
