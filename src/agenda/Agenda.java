@@ -11,7 +11,7 @@ public class Agenda extends JFrame implements ActionListener{
     private JMenuBar barra;
     private JMenu menu1;
     private JMenuItem mi1, mi2, mi3;
-    private JTextField camponuevonombre, camponuevotelefono, campocrearnombre;
+    private JTextField camponuevonombre, camponuevotelefono, campobuscarnombre;
     private JLabel etiquetanuevonombre, etiquetanuevotelefono, imprimenombre, imprimetelefono,
             nombreprograma, nombreautor, numeroversion, dibusca;
     private JButton boton, botonnuevo, botonbuscar;
@@ -108,6 +108,23 @@ public class Agenda extends JFrame implements ActionListener{
             camponuevotelefono.setVisible(false);
             botonnuevo.setVisible(false);
             
+            /*formulario */
+            imprimenombre = new JLabel("Buscar por nombre");
+            imprimenombre.setBounds(0,0,180,30);
+            add(imprimenombre);
+            imprimenombre.setVisible(true);
+            
+             campobuscarnombre = new JTextField();
+            campobuscarnombre.setBounds(150,0,180,30);
+            add(campobuscarnombre);
+            campobuscarnombre.setVisible(true);
+            
+            botonbuscar = new JButton("Buscar");
+            botonbuscar.setBounds(150,50, 180, 30);
+            add(botonbuscar);
+            botonbuscar.addActionListener(this);
+            botonbuscar.setVisible(true);
+            
         }
          
           if (e.getSource() == mi3) {
@@ -133,6 +150,40 @@ public class Agenda extends JFrame implements ActionListener{
             System.out.println("Se ha encontrado un error es: "+ex.getMessage());
         }
 
+            }
+         
+            if (e.getSource()==botonbuscar) {
+             try {
+                System.out.println("Conectando a la Base de Datos");
+                 Class.forName("com.mysql.cj.jdbc.Driver");
+                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/agendatelefonica?useTimezone=true&serverTimezone=UTC", "root", "");
+                       System.out.println("Conexion realiza con exito!");
+                    Statement estado = con.createStatement();
+              ResultSet resultado = estado.executeQuery("Select * from agenda where nombre='"+campobuscarnombre.getText()+"'");
+                      System.out.println("Datos obtenidos");
+                      //exportando resultado
+                      while (resultado.next()) {                     
+                          if (archivo.exists()) {
+                               if (archivo.canWrite()) {
+                                  nuevoarchivo = new Formatter("C://prueba//archivo.txt");
+                                  nuevoarchivo.format("%s %s %s",resultado.getString("nombre"),resultado.getString("telefono"),"telefono");
+                                  nuevoarchivo.close();
+                                    } else {
+                                        System.out.println("archivo existe y no se puede escribir");
+                                   }
+                          }else{
+                          
+                          }
+                 }
+             } catch (SQLException ex) {
+            System.out.println("error mysql");
+        }
+        catch(ClassNotFoundException err){
+            err.printStackTrace();
+        }
+        catch(Exception ex){
+            System.out.println("Se ha encontrado un error es: "+ex.getMessage());
+        }
             }
     }
     
